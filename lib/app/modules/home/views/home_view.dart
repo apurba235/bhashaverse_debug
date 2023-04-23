@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:bhashaverse_debug/app/consts/colorconst.dart';
 import 'package:bhashaverse_debug/app/modules/home/views/source_target_language_view.dart';
 import 'package:bhashaverse_debug/graphics/source_target_language_button.dart';
@@ -292,7 +289,7 @@ class HomeView extends GetView<HomeController> {
                                 border: InputBorder.none,
                                 hintText: controller
                                         .generatedInput.value ??
-                                    'Please type something to translate',
+                                    'Please type something to translate ',
                               ),
                               onChanged: (v) {
                                 controller.input = v;
