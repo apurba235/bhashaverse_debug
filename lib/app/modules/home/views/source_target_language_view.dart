@@ -41,6 +41,8 @@ class SourceTargetLanguageView extends GetView<HomeController> {
                         controller.getTransliterationModelId();
                         controller.resetFields();
                         controller.selectStatementAsInput();
+                        controller.enableTranslateButton();
+                        controller.enablePlayButton();
                       } else {
                         controller.targetLang.value = controller
                             .languages
@@ -49,6 +51,8 @@ class SourceTargetLanguageView extends GetView<HomeController> {
                             .targetLanguageList?[index];
                         controller.getTranslationAndTtsId();
                         controller.resetOutputRelatedFields();
+                        controller.enableTranslateButton();
+                        controller.enablePlayButton();
                       }
                       Get.back();
                     },

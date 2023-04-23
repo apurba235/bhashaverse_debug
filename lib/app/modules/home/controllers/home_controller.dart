@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -77,6 +76,8 @@ class HomeController extends GetxController {
   RxString transliterationModelId = RxString('');
   RxString exampleStatement = RxString('Example sentences');
   Rx<List<String>> examples = Rx<List<String>>([]);
+  RxBool enableTranslate = RxBool(false);
+  RxBool enablePlayPauseButton = RxBool(false);
 
   void resetFields([bool both = false]) {
     input = '';
@@ -105,22 +106,50 @@ class HomeController extends GetxController {
   }
 
   void selectStatementAsInput() {
+    bool setBlanck = false;
     examples.value = StaticStatements.staticList.entries
-        .firstWhere((element) => element.key == sourceLang.value)
-        .value;
+        .firstWhere((element) => element.key == sourceLang.value, orElse: () {
+      setBlanck = true;
+      return const MapEntry('', ['']);
+    }).value;
+    if (setBlanck) {
+      examples.value = [];
+    }
   }
 
-  void performComputation() {
+  Future<void> performComputation() async {
     if (ttsSwitch.value && encodedAudio.isNotEmpty) {
-      computeAsrTranslationTts();
+      await computeAsrTranslationTts();
+      enablePlayButton();
     } else if (ttsSwitch.value && encodedAudio.isEmpty && input.isNotEmpty) {
-      computeTranslationTts();
+      await computeTranslationTts();
+      enablePlayButton();
     } else if (ttsSwitch.value == false && encodedAudio.isNotEmpty) {
-      computeAsrTranslation();
+      await computeAsrTranslation();
+      enablePlayButton();
     } else if (ttsSwitch.value == false &&
         encodedAudio.isEmpty &&
         input.isNotEmpty) {
-      computeTranslation();
+      await computeTranslation();
+      enablePlayButton();
+    }
+  }
+
+  void enableTranslateButton() {
+    if ((sourceLang.value?.isNotEmpty ?? false) &&
+        (targetLang.value?.isNotEmpty ?? false) &&
+        ((input.isNotEmpty) || (encodedAudio.isNotEmpty))) {
+      enableTranslate.value = true;
+    } else {
+      enableTranslate.value = false;
+    }
+  }
+
+  void enablePlayButton() {
+    if ((output.value?.isNotEmpty ?? false) || (ttsFilePath.isNotEmpty)) {
+      enablePlayPauseButton.value = true;
+    } else {
+      enablePlayPauseButton.value = false;
     }
   }
 
@@ -149,6 +178,8 @@ class HomeController extends GetxController {
   void stopRecordingAndGetResult() async {
     recordingOngoing.value = false;
     encodedAudio = await _voiceRecorder.stopRecordingVoiceAndGetOutput() ?? '';
+    enableTranslateButton();
+    performComputation();
   }
 
   Future<void> playRecordedAudio(String filePath) async {
@@ -234,7 +265,7 @@ class HomeController extends GetxController {
             computeURL,
             sourceLang.value ?? '',
             targetLang.value ?? '',
-            encodedAudio ?? '',
+            encodedAudio,
             asrServiceId,
             translationId,
             ttsId);
@@ -276,13 +307,8 @@ class HomeController extends GetxController {
       },
     );
     AsrTranslationResponse? response = await ApiCall.instance
-        .computeAsrTranslation(
-            computeURL,
-            sourceLang.value ?? '',
-            targetLang.value ?? '',
-            encodedAudio ?? '',
-            asrServiceId,
-            translationId);
+        .computeAsrTranslation(computeURL, sourceLang.value ?? '',
+            targetLang.value ?? '', encodedAudio, asrServiceId, translationId);
     if (response != null) {
       asrTranslatedResponse.value = response;
     } else {

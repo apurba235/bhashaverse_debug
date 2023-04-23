@@ -74,7 +74,8 @@ class HomeView extends GetView<HomeController> {
                                       controller.getPipelineName();
                                       controller.getLanguages();
                                       controller.resetFields(true);
-                                      controller.transliterationModelId.value = '';
+                                      controller.transliterationModelId.value =
+                                          '';
                                     },
                                   ),
                                 ),
@@ -149,10 +150,21 @@ class HomeView extends GetView<HomeController> {
                                 controller.examples.value.length,
                                 (index) => DropdownMenuItem(
                                   value: controller.examples.value[index],
-                                  child: Text(
-                                    controller.examples.value[index],
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.visible),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xffb9e9fc)
+                                            .withOpacity(0.5),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 5.0),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 5.0),
+                                    child: Text(
+                                      controller.examples.value[index],
+                                      style: const TextStyle(
+                                          overflow: TextOverflow.visible),
+                                    ),
                                   ),
                                 ),
                               )
@@ -161,11 +173,14 @@ class HomeView extends GetView<HomeController> {
                               controller.exampleStatement.value = v ?? '';
                               controller.inputController.text = v ?? '';
                               controller.input = v ?? '';
+                              controller.output.value = null;
+                              controller.ttsFilePath = '';
+                              controller.enableTranslateButton();
+                              controller.enablePlayButton();
                             },
                           ),
                         );
                       }),
-                      const SizedBox(height: 10),
                       Obx(() {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -190,15 +205,12 @@ class HomeView extends GetView<HomeController> {
                           ],
                         );
                       }),
-                      const SizedBox(height: 10),
                       Obx(() {
                         return SizedBox(
-                          height: controller
-                              .transliterationModelId.isNotEmpty
+                          height: controller.transliterationModelId.isNotEmpty
                               ? 30
                               : 0,
-                          width: controller
-                              .transliterationModelId.isNotEmpty
+                          width: controller.transliterationModelId.isNotEmpty
                               ? Get.width
                               : 0,
                           child: Obx(() {
@@ -207,64 +219,47 @@ class HomeView extends GetView<HomeController> {
                               child: Row(
                                 children: [
                                   ...List.generate(
-                                    controller.hints.value?.output
-                                        ?.first.target?.length ??
+                                    controller.hints.value?.output?.first.target
+                                            ?.length ??
                                         0,
-                                        (index) {
-                                      final data = controller
-                                          .hints
-                                          .value
-                                          ?.output
-                                          ?.first
-                                          .target?[index] ??
+                                    (index) {
+                                      final data = controller.hints.value
+                                              ?.output?.first.target?[index] ??
                                           '';
                                       return GestureDetector(
                                         onTap: () {
-                                          String temp = controller
-                                              .inputController.text;
-                                          String output =
-                                          temp.replaceAll(
-                                              RegExp('[A-Za-z]'),
-                                              '');
-                                          controller.inputController
-                                              .text =
-                                          '$output $data ';
+                                          String temp =
+                                              controller.inputController.text;
+                                          String output = temp.replaceAll(
+                                              RegExp('[A-Za-z]'), '');
+                                          controller.inputController.text =
+                                              '$output $data ';
                                           controller.input =
-                                              controller
-                                                  .inputController
-                                                  .text;
-                                          controller.inputController
-                                              .selection =
-                                              TextSelection
-                                                  .fromPosition(
-                                                TextPosition(
-                                                    offset: controller
-                                                        .inputController
-                                                        .text
-                                                        .length),
-                                              );
-                                          controller.hints.value =
-                                          null;
+                                              controller.inputController.text;
+                                          controller.inputController.selection =
+                                              TextSelection.fromPosition(
+                                            TextPosition(
+                                                offset: controller
+                                                    .inputController
+                                                    .text
+                                                    .length),
+                                          );
+                                          controller.hints.value = null;
                                         },
                                         child: Container(
-                                          margin: const EdgeInsets
-                                              .symmetric(
+                                          margin: const EdgeInsets.symmetric(
                                               horizontal: 5.0),
-                                          padding: const EdgeInsets
-                                              .symmetric(
-                                              horizontal: 15,
-                                              vertical: 2.0),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 4.0),
                                           decoration: BoxDecoration(
-                                              color: const Color(
-                                                  0xffb9e9fc)
+                                              color: const Color(0xffb9e9fc)
                                                   .withOpacity(0.5),
                                               borderRadius:
-                                              BorderRadius
-                                                  .circular(4)),
+                                                  BorderRadius.circular(4)),
                                           child: Text(
                                             data,
-                                            style: const TextStyle(
-                                                fontSize: 16),
+                                            style:
+                                                const TextStyle(fontSize: 16),
                                           ),
                                         ),
                                       );
@@ -276,6 +271,7 @@ class HomeView extends GetView<HomeController> {
                           }),
                         );
                       }),
+                      const SizedBox(height: 10),
                       Obx(() {
                         return Expanded(
                           child: Container(
@@ -287,21 +283,30 @@ class HomeView extends GetView<HomeController> {
                               controller: controller.inputController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: controller
-                                        .generatedInput.value ??
+                                hintText: controller.generatedInput.value ??
                                     'Please type something to translate ',
                               ),
                               onChanged: (v) {
+                                controller.generatedInput.value = null;
+                                controller.output.value = null;
                                 controller.input = v;
-                                if (v.isNotEmpty) {
+                                if (v.isNotEmpty &&
+                                    controller
+                                        .transliterationModelId.isNotEmpty) {
                                   controller.getTransliterationInput();
-                                  if (!(v[v.length - 1].contains(
-                                          RegExp('[^A-Za-z]'))) &&
+                                  if (!(v[v.length - 1]
+                                          .contains(RegExp('[^A-Za-z]'))) &&
                                       (controller.sourceLang.isNotEmpty ??
                                           false)) {
                                     controller.computeTransliteration();
                                   }
                                 }
+                                if (v.isEmpty) {
+                                  controller.hints.value = null;
+                                }
+                                controller.ttsFilePath = '';
+                                controller.enableTranslateButton();
+                                controller.enablePlayButton();
                               },
                             ),
                           ),
@@ -366,7 +371,10 @@ class HomeView extends GetView<HomeController> {
                                 }
                               },
                               style: FilledButton.styleFrom(
-                                backgroundColor: ColorConst.green,
+                                backgroundColor:
+                                    controller.enableTranslate.value
+                                        ? ColorConst.green
+                                        : Colors.grey,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 15, horizontal: 35),
                               ),
@@ -408,7 +416,10 @@ class HomeView extends GetView<HomeController> {
                                     ? const EdgeInsets.all(10)
                                     : null,
                                 decoration: BoxDecoration(
-                                    color: ColorConst.deepGreen,
+                                    color:
+                                        controller.enablePlayPauseButton.value
+                                            ? ColorConst.deepGreen
+                                            : Colors.grey,
                                     borderRadius: BorderRadius.circular(25)),
                                 child: controller.ttsComputeLoader.value
                                     ? const CircularProgressIndicator(
