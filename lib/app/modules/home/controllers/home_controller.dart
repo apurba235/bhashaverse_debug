@@ -166,8 +166,10 @@ class HomeController extends GetxController {
       isMicPermissionGranted = result;
     });
     if (isMicPermissionGranted) {
-      generatedInput.value = 'Please type something to translate';
-      output.value = 'Output will be here';
+      generatedInput.value = null;
+      inputController.text = '';
+      exampleStatement.value = 'Example sentences';
+      output.value = null;
       recordingOngoing.value = true;
       input = '';
       // await _voiceRecorder.clearOldRecordings();

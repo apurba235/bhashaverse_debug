@@ -76,6 +76,8 @@ class HomeView extends GetView<HomeController> {
                                       controller.resetFields(true);
                                       controller.transliterationModelId.value =
                                           '';
+                                      controller.enableTranslateButton();
+                                      controller.enablePlayButton();
                                     },
                                   ),
                                 ),

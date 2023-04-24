@@ -4,10 +4,10 @@ class StaticStatements {
     'en': StaticStatements.englishStatements,
     'hi': StaticStatements.hindiStatements,
     'mr': StaticStatements.marathiStatements,
-    // 'bn': ,
+    'bn': StaticStatements.bengaliStatements,
     'pa': StaticStatements.punjabiStatements,
     'gu': StaticStatements.gujaratiStatements,
-    // 'or': 'Odia',
+    'or': StaticStatements.odiaStatements,
     'ta': StaticStatements.tamilStatements,
     'te': StaticStatements.teleguStatements,
     'kn': StaticStatements.kannadaStatements,
@@ -32,8 +32,6 @@ class StaticStatements {
   static const List<String> englishStatements = [
     'At the beginning of the 13th century, the most prominent and powerful state of Rajasthan was Mewar.',
     'To cultivate hobbies and interests, make a list of things you enjoy.',
-    'Exercise for at least 2.5 hours each week.',
-    'Exercise for at least 2.5 hours each week.',
     'Exercise for at least 2.5 hours each week.',
     'Poor water management, lack of proper weather forecasting and awareness were the main cause of mass destruction.'
   ];
@@ -169,6 +167,20 @@ class StaticStatements {
     'روبیڈو کے پاس ڈگریاں تھیں؛ پورٹلینڈ اسٹیٹ یونیورسٹی سے بشریات میں اور سانتا فے، نیو میکسیکو میں واقع انسٹی ٹیوٹ آف نیٹیو امریکن آرٹس سے آرٹس کی۔',
     'تاہم، کمپیوٹر چیس کا مجموعی معیار 1990 کی دہائی تک کم ہی تھا۔',
     'ننگے پاؤں چل رہی اور اپنے ہاتھوں میں جپ مالا (تسبیح) اور کُمنڈل (برتن) تھامے ہوئے دکھائی جانے والی وہ فرحت اور تسکین کی علامت ہے۔'
+  ];
+
+  static const List<String> bengaliStatements = [
+    'ভগবান হনুমানকে সমস্ত ক্ষেত্রে সবচেয়ে শক্তিশালী সত্তা হিসেবে বিবেচনা করা হয়।',
+    'মহাযাজক যিশুকে ধর্মনিন্দার জন্য দোষী সাব্যস্ত করেছিলেন এবং মহাসভা তার সঙ্গে একমত পোষণ করে তাঁকে মৃত্যুদণ্ড দিয়েছিল।',
+    'হিন্দু আধ্যাত্মিক ত্রিনোক গুহাদের জীবন ও শিক্ষাকে স্মরণ করে এই দিনটিতে শ্রদ্ধা জানানো হয়। ',
+    'সেলিব্রিটিদের সংবাদ কভারেজ কখনও কখনও কোনও অবিবাহিত বিখ্যাত ব্যক্তির উপবাস রাখার বিষয়টিকে তুলে ধরে কারণ এটি একটি শক্তিশালী এবং সম্ভবত স্থায়ী রোমান্টিক সংযুক্তির ইঙ্গিত দেয়।'
+  ];
+
+  static const List<String> odiaStatements = [
+    'ସେ ଭାରତୀୟ ଇତିହାସରେ ଉଲ୍ଲେଖଯୋଗ୍ୟ ରାଜାମାନଙ୍କ ମଧ୍ୟରେ ଅନ୍ୟତମ ବୋଲି ବିବେଚିତ ହୁଅନ୍ତି।',
+    'ତେଲୁଗୁ ସାହିତ୍ୟର ବିକାଶ ପୂର୍ବ ଚାଲୁକ୍ୟମାନଙ୍କ ଯୋଗୁଁ ସମ୍ଭବ ହୋଇପାରିଛି।',
+    'ଚୋଳ ଶାସନ କାଳ ଏହାର ଭାସ୍କର୍ଯ୍ୟ ଏବଂ କାଂସ୍ୟ କଳା ପାଇଁ ମଧ୍ୟ ଉଲ୍ଲେଖନୀୟ ।',
+    'ଏହାର ସର୍ବୋତ୍ତମ ଉଦାହରଣ ନଟରାଜଙ୍କ ଦିବ୍ୟ ନୃତ୍ୟକାର ରୂପରେ ଦେଖିବାକୁ ମିଳିଥାଏ ।'
   ];
 
 }
