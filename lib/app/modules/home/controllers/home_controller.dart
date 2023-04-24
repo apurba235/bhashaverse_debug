@@ -19,6 +19,7 @@ import 'package:bhashaverse_debug/app/utils/language_code.dart';
 import 'package:bhashaverse_debug/app/utils/permission_handler.dart';
 import 'package:bhashaverse_debug/app/utils/static_statements.dart';
 import 'package:bhashaverse_debug/app/utils/voice_recorder.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -495,6 +496,13 @@ class HomeController extends GetxController {
     computeApiData();
     await getTransliterationModels();
     await _voiceRecorder.clearOldRecordings();
+    final connectivity = await Connectivity().checkConnectivity();
+    if(connectivity == ConnectivityResult.wifi){
+      samplingRate = 16000;
+    }else{
+      samplingRate = 8000;
+    }
+    log(samplingRate.toString());
     super.onInit();
   }
 
