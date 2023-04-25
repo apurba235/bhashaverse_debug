@@ -341,10 +341,16 @@ class HomeView extends GetView<HomeController> {
                         children: [
                           Obx(() {
                             return FilledButton(
-                              onPressed: () {
-                                (!controller.recordingOngoing.value)
-                                    ? controller.startRecording()
-                                    : controller.stopRecordingAndGetResult();
+                              onPressed: () async{
+                                if(!controller.recordingOngoing.value){
+                                  controller.ttsFilePath = '';
+                                  controller.enablePlayButton();
+                                  await controller.startRecording();
+                                  controller.enablePlayButton();
+                                  controller.enableTranslateButton();
+                                }else{
+                                  controller.stopRecordingAndGetResult();
+                                }
                               },
                               style: FilledButton.styleFrom(
                                 backgroundColor:

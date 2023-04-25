@@ -6,7 +6,7 @@ import 'dart:typed_data';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:bhashaverse_debug/app/common/snackbar.dart';
-import 'package:bhashaverse_debug/app/data/api_base.dart';
+import 'package:bhashaverse_debug/app/data/api_call.dart';
 import 'package:bhashaverse_debug/app/models/asr_translation_response.dart';
 import 'package:bhashaverse_debug/app/models/asr_translation_tts_response.dart';
 import 'package:bhashaverse_debug/app/models/language_models.dart';
@@ -162,7 +162,7 @@ class HomeController extends GetxController {
     }
   }
 
-  void startRecording() async {
+  Future<void> startRecording() async {
     await PermissionHandler.requestPermissions().then((result) {
       isMicPermissionGranted = result;
     });
@@ -285,6 +285,7 @@ class HomeController extends GetxController {
         .output
         ?.first
         .source;
+    input = generatedInput.value ?? '';
     inputController.text = generatedInput.value ?? '';
     output.value = asrTranslationTts.value?.pipelineResponse
         ?.firstWhere((element) => element.taskType == 'translation')
@@ -325,6 +326,7 @@ class HomeController extends GetxController {
         .output
         ?.first
         .source;
+    input = generatedInput.value ?? '';
     inputController.text = generatedInput.value ?? '';
     output.value = asrTranslatedResponse.value?.pipelineResponse
         ?.firstWhere((element) => element.taskType == 'translation')
