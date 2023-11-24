@@ -33,17 +33,13 @@ class HomeController extends GetxController {
   final PlayerController _playerController = PlayerController();
   RxBool recordingOngoing = RxBool(false);
   Rxn<LanguageModels?> languages = Rxn<LanguageModels>();
-  Rxn<TransliterationModels?> transliterationModels =
-      Rxn<TransliterationModels>();
+  Rxn<TransliterationModels?> transliterationModels = Rxn<TransliterationModels>();
   Rxn<TransliterationResponse?> hints = Rxn<TransliterationResponse>();
   Rxn<TranslationResponse?> translatedResponse = Rxn<TranslationResponse>();
-  Rxn<AsrTranslationResponse?> asrTranslatedResponse =
-      Rxn<AsrTranslationResponse>();
+  Rxn<AsrTranslationResponse?> asrTranslatedResponse = Rxn<AsrTranslationResponse>();
   Rxn<TtsResponse?> ttsResponse = Rxn<TtsResponse>();
-  Rxn<AsrTranslationTtsResponse?> asrTranslationTts =
-      Rxn<AsrTranslationTtsResponse>();
-  Rxn<TranslationTtsResponse?> translationTtsResponse =
-      Rxn<TranslationTtsResponse>();
+  Rxn<AsrTranslationTtsResponse?> asrTranslationTts = Rxn<AsrTranslationTtsResponse>();
+  Rxn<TranslationTtsResponse?> translationTtsResponse = Rxn<TranslationTtsResponse>();
   RxnString sourceLang = RxnString();
   RxnString targetLang = RxnString();
   bool fromSourceLangButton = true;
@@ -67,7 +63,7 @@ class HomeController extends GetxController {
   late TextEditingController inputController;
   List<String> pipelineIds = [
     '64392f96daac500b55c543cd',
-    '643930aa521a4b1ba0f4c41d'
+    // '643930aa521a4b1ba0f4c41d'
   ];
   RxBool languageLoader = RxBool(false);
   RxBool computationLoader = RxBool(false);
@@ -108,8 +104,8 @@ class HomeController extends GetxController {
 
   void selectStatementAsInput() {
     bool setBlanck = false;
-    examples.value = StaticStatements.staticList.entries
-        .firstWhere((element) => element.key == sourceLang.value, orElse: () {
+    examples.value =
+        StaticStatements.staticList.entries.firstWhere((element) => element.key == sourceLang.value, orElse: () {
       setBlanck = true;
       return const MapEntry('', ['']);
     }).value;
@@ -128,9 +124,7 @@ class HomeController extends GetxController {
     } else if (ttsSwitch.value == false && encodedAudio.isNotEmpty) {
       await computeAsrTranslation();
       enablePlayButton();
-    } else if (ttsSwitch.value == false &&
-        encodedAudio.isEmpty &&
-        input.isNotEmpty) {
+    } else if (ttsSwitch.value == false && encodedAudio.isEmpty && input.isNotEmpty) {
       await computeTranslation();
       enablePlayButton();
     }
@@ -187,8 +181,7 @@ class HomeController extends GetxController {
 
   Future<void> playRecordedAudio(String filePath) async {
     playTTs.value = true;
-    if (_playerController.playerState == PlayerState.playing ||
-        _playerController.playerState == PlayerState.paused) {
+    if (_playerController.playerState == PlayerState.playing || _playerController.playerState == PlayerState.paused) {
       await _playerController.stopPlayer();
     }
     await _playerController.preparePlayer(
@@ -212,17 +205,15 @@ class HomeController extends GetxController {
   }
 
   Future<void> getTransliterationModels() async {
-    TransliterationModels? response =
-        await ApiCall.instance.getTransliterationModels();
+    TransliterationModels? response = await ApiCall.instance.getTransliterationModels();
     if (response != null) {
       transliterationModels.value = response;
     }
   }
 
   Future<void> computeTransliteration() async {
-    TransliterationResponse? response = await ApiCall.instance
-        .computeTransliteration(
-            transliterationModelId.value, transliterationInput);
+    TransliterationResponse? response =
+        await ApiCall.instance.computeTransliteration(transliterationModelId.value, transliterationInput);
     if (response != null) {
       hints.value = response;
     } else {
@@ -242,8 +233,7 @@ class HomeController extends GetxController {
         configApiCallTime.value += 1;
       },
     );
-    LanguageModels? response =
-        await ApiCall.instance.getLanguages(selectedPipeline.value);
+    LanguageModels? response = await ApiCall.instance.getLanguages(selectedPipeline.value);
     countDown?.cancel();
     log(configApiCallTime.value.toString(), name: 'time check');
     if (response != null) {
@@ -263,15 +253,8 @@ class HomeController extends GetxController {
         computeApiCallTime.value += 1;
       },
     );
-    AsrTranslationTtsResponse? response = await ApiCall.instance
-        .computeAsrTranslationTts(
-            computeURL,
-            sourceLang.value ?? '',
-            targetLang.value ?? '',
-            encodedAudio,
-            asrServiceId,
-            translationId,
-            ttsId);
+    AsrTranslationTtsResponse? response = await ApiCall.instance.computeAsrTranslationTts(
+        computeURL, sourceLang.value ?? '', targetLang.value ?? '', encodedAudio, asrServiceId, translationId, ttsId);
     if (response != null) {
       asrTranslationTts.value = response;
     } else {
@@ -310,9 +293,8 @@ class HomeController extends GetxController {
         computeApiCallTime.value += 1;
       },
     );
-    AsrTranslationResponse? response = await ApiCall.instance
-        .computeAsrTranslation(computeURL, sourceLang.value ?? '',
-            targetLang.value ?? '', encodedAudio, asrServiceId, translationId);
+    AsrTranslationResponse? response = await ApiCall.instance.computeAsrTranslation(
+        computeURL, sourceLang.value ?? '', targetLang.value ?? '', encodedAudio, asrServiceId, translationId);
     if (response != null) {
       asrTranslatedResponse.value = response;
     } else {
@@ -346,8 +328,7 @@ class HomeController extends GetxController {
       },
     );
     TranslationTtsResponse? response = await ApiCall.instance
-        .computeTranslationTts(computeURL, sourceLang.value ?? '',
-            targetLang.value ?? '', input, translationId, ttsId);
+        .computeTranslationTts(computeURL, sourceLang.value ?? '', targetLang.value ?? '', input, translationId, ttsId);
     if (response != null) {
       translationTtsResponse.value = response;
     } else {
@@ -378,12 +359,8 @@ class HomeController extends GetxController {
         computeApiCallTime.value += 1;
       },
     );
-    TranslationResponse? response = await ApiCall.instance.computeTranslation(
-        computeURL,
-        sourceLang.value ?? '',
-        targetLang.value ?? '',
-        input,
-        translationId);
+    TranslationResponse? response = await ApiCall.instance
+        .computeTranslation(computeURL, sourceLang.value ?? '', targetLang.value ?? '', input, translationId);
     countDown?.cancel();
     if (response != null) {
       translatedResponse.value = response;
@@ -391,9 +368,7 @@ class HomeController extends GetxController {
       await showSnackBar();
     }
     computationLoader.value = false;
-    output.value = translatedResponse
-            .value?.pipelineResponse?.first.output?.first.target ??
-        '';
+    output.value = translatedResponse.value?.pipelineResponse?.first.output?.first.target ?? '';
     ttsFilePath = '';
   }
 
@@ -406,8 +381,8 @@ class HomeController extends GetxController {
         computeApiCallTime.value += 1;
       },
     );
-    TtsResponse? response = await ApiCall.instance.generateTTS(
-        computeURL, targetLang.value ?? '', output.value ?? '', ttsId);
+    TtsResponse? response =
+        await ApiCall.instance.generateTTS(computeURL, targetLang.value ?? '', output.value ?? '', ttsId);
     countDown?.cancel();
     if (response != null) {
       ttsResponse.value = response;
@@ -415,8 +390,7 @@ class HomeController extends GetxController {
       await showSnackBar();
     }
     ttsComputeLoader.value = false;
-    String audioTts =
-        response?.pipelineResponse?.first.audio?.first.audioContent ?? '';
+    String audioTts = response?.pipelineResponse?.first.audio?.first.audioContent ?? '';
     await writeTTsAudio(audioTts);
     await playRecordedAudio(ttsFilePath);
   }
@@ -428,21 +402,15 @@ class HomeController extends GetxController {
     if (!await Directory(recordingPath).exists()) {
       Directory(recordingPath).create();
     }
-    ttsFilePath =
-        '$recordingPath/TTSAudio${DateTime.now().millisecondsSinceEpoch}.wav';
+    ttsFilePath = '$recordingPath/TTSAudio${DateTime.now().millisecondsSinceEpoch}.wav';
     File? ttsAudioFile = File(ttsFilePath);
     await ttsAudioFile.writeAsBytes(fileAsBytes);
   }
 
   void computeApiData() {
-    computeURL =
-        languages.value?.pipelineInferenceAPIEndPoint?.callbackUrl ?? '';
-    computeApiKey =
-        languages.value?.pipelineInferenceAPIEndPoint?.inferenceApiKey?.name ??
-            '';
-    computeApiValue =
-        languages.value?.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value ??
-            '';
+    computeURL = languages.value?.pipelineInferenceAPIEndPoint?.callbackUrl ?? '';
+    computeApiKey = languages.value?.pipelineInferenceAPIEndPoint?.inferenceApiKey?.name ?? '';
+    computeApiValue = languages.value?.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value ?? '';
     ApiCall.instance.generateComputeHeader(computeApiKey, computeApiValue);
   }
 
@@ -450,8 +418,7 @@ class HomeController extends GetxController {
     asrServiceId = languages.value?.pipelineResponseConfig
             ?.firstWhere((element) => element.taskType == 'asr')
             .config
-            ?.firstWhere((e) =>
-                e.language?.sourceLanguage?.contains(sourceLang) ?? false)
+            ?.firstWhere((e) => e.language?.sourceLanguage?.contains(sourceLang) ?? false)
             .serviceId ??
         "";
     log(asrServiceId, name: 'Asr Service  ID');
@@ -461,17 +428,14 @@ class HomeController extends GetxController {
     translationId = languages.value?.pipelineResponseConfig
             ?.firstWhere((element) => element.taskType == 'translation')
             .config
-            ?.firstWhere((e) =>
-                ((e.language?.sourceLanguage?.contains(sourceLang) ?? false) &&
-                    (e.language?.targetLanguage?.contains(targetLang) ??
-                        false)))
+            ?.firstWhere((e) => ((e.language?.sourceLanguage?.contains(sourceLang) ?? false) &&
+                (e.language?.targetLanguage?.contains(targetLang) ?? false)))
             .serviceId ??
         "";
     ttsId = languages.value?.pipelineResponseConfig
             ?.firstWhere((element) => element.taskType == 'tts')
             .config
-            ?.firstWhere((e) =>
-                (e.language?.sourceLanguage?.contains(targetLang) ?? false))
+            ?.firstWhere((e) => (e.language?.sourceLanguage?.contains(targetLang) ?? false))
             .serviceId ??
         "";
     log(translationId, name: 'Translation Service  ID');
@@ -482,8 +446,7 @@ class HomeController extends GetxController {
     transliterationModelId.value = transliterationModels.value?.data
             ?.firstWhere(
               (element) => ((element.languages?.first.sourceLanguage == 'en') &&
-                  (element.languages?.first.targetLanguage ==
-                      sourceLang.value)),
+                  (element.languages?.first.targetLanguage == sourceLang.value)),
               orElse: () => Data(modelId: ''),
             )
             .modelId ??
@@ -499,19 +462,17 @@ class HomeController extends GetxController {
     await getTransliterationModels();
     await _voiceRecorder.clearOldRecordings();
     final connectivity = await Connectivity().checkConnectivity();
-    if(connectivity == ConnectivityResult.wifi){
+    if (connectivity == ConnectivityResult.wifi) {
       samplingRate = 16000;
-    }else{
+    } else {
       samplingRate = 8000;
     }
     log(samplingRate.toString());
     super.onInit();
   }
 
-  String getLanguageName(String code) => LanguageCode.languageCode.entries
-      .where((element) => element.key == code)
-      .first
-      .value;
+  String getLanguageName(String code) =>
+      LanguageCode.languageCode.entries.where((element) => element.key == code).first.value;
 
   @override
   void onReady() {

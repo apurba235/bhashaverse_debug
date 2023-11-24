@@ -40,9 +40,6 @@ class ApiBase {
             path,
             data: body,
             options: Options(headers: headers),
-            // options: attachToken
-            //     ? Options(headers: header)
-            //     : null,
           );
           break;
         default:
@@ -50,7 +47,7 @@ class ApiBase {
       }
 
       ///logging the RESPONSE details
-      // log('${response?.data}', name: "RESPONSE");
+      log('${response?.data}', name: "RESPONSE");
       log('${response?.statusCode}', name: "RESPONSE STATUS CODE");
 
       ///if nor error then return response else return NUll
